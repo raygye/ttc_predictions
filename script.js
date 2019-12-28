@@ -17,7 +17,7 @@ function setDir() {
     let dirs = [];
     const doc = $.ajax({
         type: "GET",
-        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r="+document.getElementById("selRoute").value,
+        url: "https://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r="+document.getElementById("selRoute").value,
         xml: "xml",
         async: false,
     }).responseXML;
@@ -31,7 +31,7 @@ function setDir() {
 let buses = [];
 const doc = $.ajax({
     type: "GET",
-    url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=ttc",
+    url: "https://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=ttc",
     xml: "xml",
     async: false,
 }).responseXML;
