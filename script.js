@@ -4,14 +4,16 @@ function changeRoute() {
     console.log(newRoute);
 }
 //sets default menu options
-function defOption(el) {
+function defOption(el, text) {
+    el.value = "none";
     el.setAttribute("selected", "");
     el.setAttribute("hidden", "");
     el.setAttribute("disabled", "");
+    el.innerHTML = text;
 }
 //upon a route change, function changes second menu to display appropriate directions
 function setDir() {
-    dirDef.title = "Select a direction";
+    dirDef.innerHTML = "Select a direction";
     let dirs = [];
     const doc = $.ajax({
         type: "GET",
@@ -42,14 +44,11 @@ let selDir = document.createElement("select");
 selDir.id = "selDir";
 //default route selection
 let routeDef = document.createElement("option");
-routeDef.value = "none";
-defOption(routeDef);
-routeDef.innerHTML = "Select a route";
+defOption(routeDef, "Select a route for directions");
 selRoute.appendChild(routeDef);
 //default direction selection
 let dirDef = document.createElement("option");
-defOption(dirDef);
-dirDef.innerHTML = "Select a route for directions";
+defOption(dirDef, "Select a route for directions");
 selDir.appendChild(dirDef);
 //populates route menu
 for (let i = 0; i < routes.length; i++) {
