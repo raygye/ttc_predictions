@@ -1,0 +1,12 @@
+.banners {
+    background-color: lightslategrey;
+    padding: 10px;
+    color: white;
+    font-family: Verdana;
+}
+body {
+    background-image: url("daniel-salgado-igRWvbLxGjw-unsplash.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
