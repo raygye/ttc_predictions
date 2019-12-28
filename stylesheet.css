@@ -4,6 +4,10 @@
     color: white;
     font-family: Verdana;
 }
+.menu {
+    font-size: larger;
+    font-family: Verdana;
+}
 body {
     background-image: url("daniel-salgado-igRWvbLxGjw-unsplash.jpg");
     background-repeat: no-repeat;
