@@ -17,7 +17,7 @@ function setDir() {
     let dirs = [];
     const doc = $.ajax({
         type: "GET",
-        url: "https://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r="+document.getElementById("selRoute").value,
+        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r="+document.getElementById("selRoute").value,
         xml: "xml",
         async: false,
     }).responseXML;
@@ -31,7 +31,7 @@ function setDir() {
 let buses = [];
 const doc = $.ajax({
     type: "GET",
-    url: "https://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=ttc",
+    url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=ttc",
     xml: "xml",
     async: false,
 }).responseXML;
@@ -44,11 +44,11 @@ let selDir = document.createElement("select");
 selDir.id = "selDir";
 //default route selection
 let routeDef = document.createElement("option");
-defOption(routeDef, "Select a route for directions");
+defOption(routeDef, "Select a route");
 selRoute.appendChild(routeDef);
 //default direction selection
 let dirDef = document.createElement("option");
-defOption(dirDef, "Select a route for directions");
+defOption(dirDef, "Select a route to choose direction");
 selDir.appendChild(dirDef);
 //populates route menu
 for (let i = 0; i < routes.length; i++) {
