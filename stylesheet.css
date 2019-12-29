@@ -1,12 +1,22 @@
-.banners {
+.h1 {
     background-color: lightslategrey;
-    padding: 10px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 20px;
     color: white;
-    font-family: Verdana;
+    font-family: Verdana, serif;
+}
+.border {
+    width: 440px;
+    background-color: lightslategrey;
+    padding: 1px 10px 25px 25px;
+    color: white;
+    font-family: Verdana, serif;
 }
 .menu {
-    font-size: larger;
-    font-family: Verdana;
+    font-size: 110%;
+    font-family: Verdana, serif;
+    width: 420px;
 }
 body {
     background-image: url("daniel-salgado-igRWvbLxGjw-unsplash.jpg");

@@ -86,7 +86,9 @@ function setStops() {
         }
     }
 }
-
+function predict() {
+    document.getElementById("stopName").innerHTML = $("#selStop option:selected").text();
+}
 //site initialization
 //retrieves route info
 const doc = $.ajax({

@@ -9,12 +9,18 @@
 
 <body>
 
-<div class="banners">
+<div class="h1">
     <h1>TTC Predictions</h1>
 </div>
-<br><div class="banners" id="routes" onchange="changeRoute(); setDir();"></div>
-<div class="banners" id="dirs" onchange="setStops();"></div>
-<div class="banners" id="stops"></div>
+<br><div class="border">
+    <h2>Select by route</h2>
+    <div id="routes" onchange="changeRoute(); setDir();"></div>
+    <div id="dirs" onchange="setStops();"></div>
+    <div id="stops" onchange="predict();"></div>
+</div>
+<br><div class = "border">
+    <h2 id="stopName"></h2>
+</div>
 <script src="./script.js"></script>
 </body>
 </html>
