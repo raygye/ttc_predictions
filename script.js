@@ -1,5 +1,5 @@
+//currently 1d, will be later pushed to 2d to store directions and their respective stops
 let dirs = [];
-
 //for debugging
 function changeRoute() {
     let newRoute = document.getElementById("selRoute").value;
@@ -31,30 +31,30 @@ function setDir() {
         xml: "xml",
         async: false,
     }).responseXML;
+    //contains stops,routes, directions,#text...
     let directions = doc.childNodes[0].childNodes[1].childNodes;
     //clear previous route's direction selection
     empty(selDir);
+    //dirCount required as size of direction array is not equal to length of nodes (#text nodes exist)
     let dirCount = 0;
-    let counter = 0;
     for (let i = 0; i < directions.length; i++) {
-        let direction = directions[i];
-        if (direction.nodeName === "direction") {
+        //incremented current node
+        let curNode = directions[i];
+        if (curNode.nodeName === "direction") {
             let opt = document.createElement("option");
             opt.value = dirCount.toString();
-            opt.innerHTML = direction.getAttribute("title");
-            let stops = direction.childNodes;
-            dirs[counter] = [];
+            opt.innerHTML = curNode.getAttribute("title");
+            let stops = curNode.childNodes;
+            dirs[dirCount] = [];
             for (let j = 0; j < stops.length; j++) {
                 if (stops[j].nodeName !== "#text") {
-                    dirs[counter].push(stops[j].getAttribute("tag"));
+                    dirs[dirCount].push(stops[j].getAttribute("tag"));
                 }
             }
-            counter++;
             selDir.appendChild(opt);
             dirCount++;
         }
     }
-    console.log(dirs);
 }
 
 function setStops() {
@@ -72,10 +72,13 @@ function setStops() {
         if (i == selDir.value) {
             for (let j = 0; j < dirs[i].length; j++) {
                 for (let k = 0; k < allRoutes.length; k++) {
-                    let oneRoute = allRoutes[k];
-                    if (oneRoute.nodeName!=="#text" && oneRoute.getAttribute("tag") == dirs[i][j]) {
+                    //incremented current node
+                    let curNode = allRoutes[k];
+                    if (curNode.nodeName!=="#text" && curNode.getAttribute("tag") == dirs[i][j]) {
                         let opt = document.createElement("option");
-                        opt.innerHTML = oneRoute.getAttribute("title");
+                        //stop tags are used for predictions
+                        opt.value = curNode.getAttribute("tag");
+                        opt.innerHTML = curNode.getAttribute("title");
                         selStop.appendChild(opt);
                     }
                 }
