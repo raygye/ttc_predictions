@@ -58,14 +58,27 @@ function setDir() {
 }
 
 function setStops() {
+    empty(selStop);
     stopDef.innerHTML = "Select a stop";
+    const doc = $.ajax({
+        type: "GET",
+        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + document.getElementById("selRoute").value,
+        xml: "xml",
+        async: false,
+    }).responseXML;
+    //contains stops,routes, directions,#text...
+    let allRoutes = doc.childNodes[0].childNodes[1].childNodes;
     for (let i = 0; i < dirs.length; i++) {
-        console.log(i, selDir.value);
         if (i == selDir.value) {
             for (let j = 0; j < dirs[i].length; j++) {
-                let opt = document.createElement("option");
-                opt.innerHTML = dirs[i][j];
-                selStop.appendChild(opt);
+                for (let k = 0; k < allRoutes.length; k++) {
+                    let oneRoute = allRoutes[k];
+                    if (oneRoute.nodeName!=="#text" && oneRoute.getAttribute("tag") == dirs[i][j]) {
+                        let opt = document.createElement("option");
+                        opt.innerHTML = oneRoute.getAttribute("title");
+                        selStop.appendChild(opt);
+                    }
+                }
             }
         }
     }
