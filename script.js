@@ -107,7 +107,7 @@ function predict() {
     console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
         "&s=" + document.getElementById("selStop").value);
     if (doc.childNodes[0].childNodes[1].hasAttribute("dirTitleBecauseNoPredictions")) {
-       console.log("this is bad");
+        predictions+= "No predictions available at the moment. There may be no buses running.";
     }
     //contains #text as well as directions, directions will contain their respective predictions
     let directions = doc.childNodes[0].childNodes[1].childNodes;
@@ -120,6 +120,7 @@ function predict() {
                 //incremented current node for predictions (the child node of direction)
                 let curSub = curNode.childNodes[j];
                 if (curSub.nodeName=="prediction") {
+                    console.log(12341234)
                     //new time object
                     let current = new Date();
                     let seconds = curSub.getAttribute("seconds");
@@ -131,7 +132,16 @@ function predict() {
                 }
             }
         }
+        else if (curNode.nodeName=="direction"){
+            if (predictions==="") {
+                predictions+="No buses available for this direction, but available for: " + curNode.getAttribute("title");
+            }
+            else {
+                predictions+=", " + curNode.getAttribute("title");
+            }
+        }
     }
+    console.log(predictions);
     //final prediction printed
     document.getElementById("printPre").innerHTML = predictions;
     document.getElementById("predictions").style.opacity = "1";

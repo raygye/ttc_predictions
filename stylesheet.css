@@ -20,15 +20,19 @@
     width: 420px;
     height: 30px;
 }
+
 #predictions {
     transition: opacity 1s;
 }
-#or {
-    display: inline-block;
-}
+
 body {
     background-image: url("daniel-salgado-igRWvbLxGjw-unsplash.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
+}
+br {
+    display: block; /* makes it have a width */
+    content: ""; /* clears default height */
+    margin-top: 20px; /* change this to whatever height you want it */
 }
