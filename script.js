@@ -88,6 +88,23 @@ function setStops() {
 }
 function predict() {
     document.getElementById("stopName").innerHTML = $("#selStop option:selected").text();
+    const doc = $.ajax({
+        type: "GET",
+        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
+            "&s=" + document.getElementById("selStop").value,
+        xml: "xml",
+        async: false,
+    }).responseXML;
+    console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
+        "&s=" + document.getElementById("selStop").value);
+    //contains #text as well as directions, directions will contain their respective predictions
+    let directions = doc.childNodes[0].childNodes[1].childNodes;
+    for (let i = 0; i < directions.length; i++) {
+        //incremented current node
+        let curNode = directions[i];
+        if (curNode.nodeName!=="#text") {
+        }
+    }
 }
 //site initialization
 //retrieves route info
