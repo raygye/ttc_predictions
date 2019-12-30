@@ -136,6 +136,7 @@ function predict() {
     let printPre = document.createElement("p");
     printPre.innerHTML = predictions;
     document.getElementById("predictions").appendChild(printPre);
+    document.getElementById("predictions").style.opacity = "1";
     //clear predictions for next use
     predictions = "";
 }

@@ -18,6 +18,9 @@
     font-family: Verdana, serif;
     width: 420px;
 }
+#predictions {
+    transition: opacity 1s;
+}
 body {
     background-image: url("daniel-salgado-igRWvbLxGjw-unsplash.jpg");
     background-repeat: no-repeat;
