@@ -106,7 +106,7 @@ function predict() {
         if (curNode.nodeName=="direction" && $("#selDir option:selected").text()==curNode.getAttribute("title")) {
             for (let j = 0; j < curNode.childNodes.length; j++) {
                 //incremented current node for predictions (the child node of direction)
-                let curSub = curNode.childNodes[i];
+                let curSub = curNode.childNodes[j];
                 if (curSub.nodeName=="prediction") {
                     console.log(curSub.getAttribute("seconds"));
                 }
