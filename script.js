@@ -102,7 +102,15 @@ function predict() {
     for (let i = 0; i < directions.length; i++) {
         //incremented current node
         let curNode = directions[i];
-        if (curNode.nodeName!=="#text") {
+        //make sure we have found the appropriate direction
+        if (curNode.nodeName=="direction" && $("#selDir option:selected").text()==curNode.getAttribute("title")) {
+            for (let j = 0; j < curNode.childNodes.length; j++) {
+                //incremented current node for predictions (the child node of direction)
+                let curSub = curNode.childNodes[i];
+                if (curSub.nodeName=="prediction") {
+                    console.log(curSub.getAttribute("seconds"));
+                }
+            }
         }
     }
 }
