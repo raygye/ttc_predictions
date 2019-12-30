@@ -8,18 +8,24 @@ function changeRoute() {
 
 //empties selection menus
 function empty(select) {
-    for (let i = select.length - 1; select.length > 1; i--) {
+    for (let i = select.length - 1; i > 0; i--) {
         select.options[i] = null;
     }
 }
 
 //sets default menu options
-function defOption(el, text) {
-    el.value = "none";
+function defOption(el) {
     el.setAttribute("selected", "");
-    el.setAttribute("hidden", "");
-    el.setAttribute("disabled", "");
-    el.innerHTML = text;
+    el.setAttribute("hidden", "")
+    if (el === routeDef) {
+        el.innerHTML = "Select a route";
+    }
+    else if (el === dirDef) {
+        el.innerHTML = "Select a route to select direction";
+    }
+    else {
+        el.innerHTML = "Select a direction to select a stop";
+    }
 }
 
 //upon a route change, function changes second menu to display appropriate directions
@@ -137,15 +143,15 @@ selStop.className = "menu";
 selStop.id = "selStop";
 //default route selections
 let routeDef = document.createElement("option");
-defOption(routeDef, "Select a route");
+defOption(routeDef);
 selRoute.appendChild(routeDef);
 //default direction selection
 let dirDef = document.createElement("option");
-defOption(dirDef, "Select a route to select direction");
+defOption(dirDef);
 selDir.appendChild(dirDef);
 //default stop selection
 let stopDef = document.createElement("option");
-defOption(stopDef, "Select a direction to select a stop");
+defOption(stopDef);
 selStop.appendChild(stopDef);
 //populates route menu
 for (let i = 0; i < routes.length; i++) {
