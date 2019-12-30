@@ -96,6 +96,7 @@ function setStops() {
 }
 function predict() {
     document.getElementById("stopName").innerHTML = $("#selStop option:selected").text();
+    document.getElementById("dirName").innerHTML = $("#selDir option:selected").text();
     const doc = $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
@@ -119,11 +120,24 @@ function predict() {
                 //incremented current node for predictions (the child node of direction)
                 let curSub = curNode.childNodes[j];
                 if (curSub.nodeName=="prediction") {
-                    console.log(curSub.getAttribute("seconds"));
+                    //new time object
+                    let current = new Date();
+                    let seconds = curSub.getAttribute("seconds");
+                    //seconds is multiplied by 1000 as js works with milliseconds
+                    current = new Date(current.getTime() + seconds*1000);
+                    predictions+=selRoute.value + " - Bus #" + curSub.getAttribute("vehicle") + " - in " +
+                        Math.floor(seconds/60) + " min " + seconds%60 + " sec - ETA " + current.getHours() + ":" +
+                        ("0" + current.getMinutes()).slice(-2) + "<br>";
                 }
             }
         }
     }
+    //final prediction printed
+    let printPre = document.createElement("p");
+    printPre.innerHTML = predictions;
+    document.getElementById("predictions").appendChild(printPre);
+    //clear predictions for next use
+    predictions = "";
 }
 //site initialization
 //retrieves route info
