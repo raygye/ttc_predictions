@@ -1,5 +1,7 @@
 //currently 1d, will be later pushed to 2d to store directions and their respective stops
 let dirs = [];
+//prediction string to be displayed
+let predictions = "";
 //for debugging
 function changeRoute() {
     let newRoute = document.getElementById("selRoute").value;
@@ -17,10 +19,10 @@ function empty(select) {
 function defOption(el) {
     el.setAttribute("selected", "");
     el.setAttribute("hidden", "")
-    if (el === routeDef) {
+    if (el===routeDef) {
         el.innerHTML = "Select a route";
     }
-    else if (el === dirDef) {
+    else if (el===dirDef) {
         el.innerHTML = "Select a route to select direction";
     }
     else {
@@ -103,6 +105,9 @@ function predict() {
     }).responseXML;
     console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
         "&s=" + document.getElementById("selStop").value);
+    if (doc.childNodes[0].childNodes[1].hasAttribute("dirTitleBecauseNoPredictions")) {
+       console.log("this is bad");
+    }
     //contains #text as well as directions, directions will contain their respective predictions
     let directions = doc.childNodes[0].childNodes[1].childNodes;
     for (let i = 0; i < directions.length; i++) {
