@@ -14,16 +14,16 @@
 </div>
 <br><div class="border">
     <h2>Select by route</h2>
-    <div id="routes" onchange="changeRoute(); setDir(); empty(selStop); defOption(dirDef); defOption(stopDef); clearInterval(timer)"></div>
-    <div id="dirs" onchange="setStops(); clearInterval(timer)"></div>
-    <div id="stops" onchange="predict(); update()"></div>
+    <div id="routes" onchange="changeRoute(); setDir(); empty(selStop); defOption(dirDef); defOption(stopDef); clearBoth();"></div>
+    <div id="dirs" onchange="setStops(); clearBoth();"></div>
+    <div id="stops" onchange="predict(); update();"></div>
 </div>
 <br><div id="predictions" class = "border" style="width: 880px; opacity: 0">
     <h2 id="stopName"></h2>
     <h3 id="dirName"></h3>
-    <p id = "printPre"></p>
+    <p id="printPre"></p>
     <hr>
-    <p>Updates will refresh every 5 seconds.</p>
+    <p id="count"></p>
 </div>
 <script src="./script.js"></script>
 </body>

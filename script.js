@@ -2,8 +2,14 @@
 let dirs = [];
 //prediction string to be displayed
 let predictions = "";
+//boolean for if the desired prediction is found
+let found;
 //variable for setting update interval
 let timer;
+//variable for setting update countdown interval
+let counter;
+//companion variable for counter, actual seconds elapsed, will be %5
+let countNum = 0;
 //for debugging
 function changeRoute() {
     let newRoute = document.getElementById("selRoute").value;
@@ -118,6 +124,7 @@ function predict() {
         let curNode = directions[i];
         //make sure we have found the appropriate direction
         if (curNode.nodeName=="direction" && $("#selDir option:selected").text()==curNode.getAttribute("title")) {
+            found = true;
             for (let j = 0; j < curNode.childNodes.length; j++) {
                 //incremented current node for predictions (the child node of direction)
                 let curSub = curNode.childNodes[j];
@@ -134,7 +141,7 @@ function predict() {
             }
         }
         //accommodates the case where other direction's buses are available
-        else if (curNode.nodeName=="direction"){
+        else if (curNode.nodeName=="direction" && found === false){
             if (predictions==="") {
                 predictions+="No buses available for this direction, but available for: " + curNode.getAttribute("title");
             }
@@ -149,8 +156,21 @@ function predict() {
     //clear predictions for next use
     predictions = "";
 }
-function update(time) {
+//sets intervals for updates and update countdown clock
+function update() {
     timer = setInterval(predict, 5000);
+    counter = setInterval(counting, 1000);
+}
+//will increment per second
+function counting() {
+    countNum++;
+    document.getElementById("count").innerHTML = "Refreshing in " + (5-(countNum%5)) + " second(s)";
+}
+//clears both update and update countdown clock
+function clearBoth() {
+    clearInterval(timer);
+    clearInterval(counter);
+    countNum = 0;
 }
 //site initialization
 //retrieves route info
