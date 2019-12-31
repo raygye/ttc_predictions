@@ -10,6 +10,15 @@ let timer;
 let counter;
 //companion variable for counter, actual seconds elapsed, will be %5
 let countNum = 0;
+//variable storing last time refreshed
+let lastRef;
+//made just for making it easier to display months
+let monthNames = [
+    "January", "February", "March",
+    "April", "May", "June", "July",
+    "August", "September", "October",
+    "November", "December"
+];
 //for debugging
 function changeRoute() {
     let newRoute = document.getElementById("selRoute").value;
@@ -41,6 +50,8 @@ function defOption(el) {
 //upon a route change, function changes second menu to display appropriate directions
 function setDir() {
     dirDef.innerHTML = "Select a direction";
+    //clear refresh timer
+    document.getElementById("count").innerHTML = "";
     const doc = $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + document.getElementById("selRoute").value,
@@ -74,8 +85,11 @@ function setDir() {
 }
 
 function setStops() {
+    //empty previous stops
     empty(selStop);
     stopDef.innerHTML = "Select a stop";
+    //clear refresh timer
+    document.getElementById("count").innerHTML = "";
     const doc = $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + document.getElementById("selRoute").value,
@@ -135,7 +149,7 @@ function predict() {
                     //seconds is multiplied by 1000 as js works with milliseconds
                     current = new Date(current.getTime() + seconds*1000);
                     predictions+=selRoute.value + " - Bus #" + curSub.getAttribute("vehicle") + " - in " +
-                        Math.floor(seconds/60) + " min " + seconds%60 + " sec - ETA " + current.getHours() + ":" +
+                        Math.floor(seconds/60) + " min " + seconds%60 + " sec - ETA " + ("0" + current.getHours()).slice(-2) + ":" +
                         ("0" + current.getMinutes()).slice(-2) + "<br>";
                 }
             }
@@ -153,6 +167,10 @@ function predict() {
     //final prediction printed
     document.getElementById("printPre").innerHTML = predictions;
     document.getElementById("predictions").style.opacity = "1";
+    lastRef = new Date();
+    document.getElementById("lastRef").innerHTML = ("Last updated: " + monthNames[lastRef.getMonth()] + " " +
+        ("0" + lastRef.getDay()).slice(-2) + ", " + lastRef.getFullYear() + " at " + ("0" + lastRef.getHours()).slice(-2) + ":" +
+        ("0" + lastRef.getMinutes()).slice(-2) + ":" + ("0" + lastRef.getSeconds()).slice(-2));
     //clear predictions for next use
     predictions = "";
 }
