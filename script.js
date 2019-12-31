@@ -3,7 +3,7 @@ let dirs = [];
 //prediction string to be displayed
 let predictions = "";
 //boolean for if the desired prediction is found
-let found;
+let found = false;
 //variable for setting update interval
 let timer;
 //variable for setting update countdown interval
