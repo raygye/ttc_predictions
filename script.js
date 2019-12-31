@@ -21,6 +21,8 @@ let monthNames = [
 ];
 //variable storing stopID
 let stopID;
+//prediction to be printed if other routes are available
+let subPrint;
 //for debugging
 function changeRoute() {
     let newRoute = document.getElementById("selRoute").value;
@@ -157,22 +159,26 @@ function predict() {
             }
         }
         //accommodates the case where other direction's buses are available
-        else if (curNode.nodeName=="direction" && found === false){
-            if (predictions==="") {
-                predictions+="No buses available for this direction, but available for: " + curNode.getAttribute("title");
+         else if (curNode.nodeName=="direction" && found === false){
+            if (subPrint==="") {
+                subPrint+="No buses available for this direction, but available for: " + curNode.getAttribute("title");
             }
             else {
-                predictions+=", " + curNode.getAttribute("title");
+                subPrint+=", " + curNode.getAttribute("title");
             }
         }
     }
-    console.log(predictions);
     predHandle();
 }
 //handles appending predictions, wipes variables
 function predHandle() {
     //final prediction printed
-    document.getElementById("printPre").innerHTML = predictions;
+    if(predictions=="") {
+        document.getElementById("printPre").innerHTML = subPrint;
+    }
+    else {
+        document.getElementById("printPre").innerHTML = predictions;
+    }
     document.getElementById("predictions").style.opacity = "1";
     lastRef = new Date();
     document.getElementById("lastRef").innerHTML = ("Last updated: " + monthNames[lastRef.getMonth()] + " " +
