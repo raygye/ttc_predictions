@@ -2,6 +2,8 @@
 let dirs = [];
 //prediction string to be displayed
 let predictions = "";
+//variable for setting update interval
+let timer;
 //for debugging
 function changeRoute() {
     let newRoute = document.getElementById("selRoute").value;
@@ -120,7 +122,6 @@ function predict() {
                 //incremented current node for predictions (the child node of direction)
                 let curSub = curNode.childNodes[j];
                 if (curSub.nodeName=="prediction") {
-                    console.log(12341234)
                     //new time object
                     let current = new Date();
                     let seconds = curSub.getAttribute("seconds");
@@ -132,6 +133,7 @@ function predict() {
                 }
             }
         }
+        //accommodates the case where other direction's buses are available
         else if (curNode.nodeName=="direction"){
             if (predictions==="") {
                 predictions+="No buses available for this direction, but available for: " + curNode.getAttribute("title");
@@ -141,12 +143,14 @@ function predict() {
             }
         }
     }
-    console.log(predictions);
     //final prediction printed
     document.getElementById("printPre").innerHTML = predictions;
     document.getElementById("predictions").style.opacity = "1";
     //clear predictions for next use
     predictions = "";
+}
+function update(time) {
+    timer = setInterval(predict, 5000);
 }
 //site initialization
 //retrieves route info
