@@ -17,13 +17,13 @@
         <h2>Select by route</h2>
         <div id="routes" onchange="changeRoute(); setDir(); empty(selStop); defOption(dirDef); defOption(stopDef); clearBoth();"></div>
         <div id="dirs" onchange="setStops(); clearBoth();"></div>
-        <div id="stops" onchange="predict(); clearBoth(); update();"></div>
+        <div id="stops" onchange="predict(); clearBoth(); update(); setMap();"></div>
     </div>
     <div id="stopID" class="border">
         <h2>Select by stop number</h2>
         <label for="stopFill" style="color: white; font-size: 110%">Enter stop number:</label>
         <input id="stopFill" type="number">
-        <br><button id="submit" class="button" onclick="submit(); clearBoth(); updateID();">Go</button>
+        <br><button id="submit" class="button" onclick="submit(); clearBoth(); updateID(); setMap();">Go</button>
     </div>
 </div>
 <br><div id="predictions" style="opacity: 0;">

@@ -200,8 +200,6 @@ function predHandle() {
     subPrint = "";
     //reset found boolean
     found = false;
-    //generate map
-    setMap();
 }
 
 //sets intervals for updates and update countdown clock
@@ -297,8 +295,6 @@ function setMap() {
             curNode.getAttribute("stopId") == stopID)) {
             stopLat = parseFloat(curNode.getAttribute("lat"));
             stopLon = parseFloat(curNode.getAttribute("lon"));
-            console.log("lat: " + stopLat + " lon: " + stopLon);
-            initMap();
         }
         //counter for routeLine
         else if (curNode.nodeName == "path") {
@@ -313,6 +309,7 @@ function setMap() {
             dirCount++;
         }
     }
+    initMap();
 }
 function initMap() {
     let theStop = {lat: stopLat, lng: stopLon};
