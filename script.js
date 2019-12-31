@@ -180,6 +180,8 @@ function predHandle() {
         ("0" + lastRef.getMinutes()).slice(-2) + ":" + ("0" + lastRef.getSeconds()).slice(-2));
     //clear predictions for next use
     predictions = "";
+    //reset found boolean
+    found = false;
 }
 //sets intervals for updates and update countdown clock
 function update() {
@@ -215,9 +217,6 @@ function submit() {
         async: false,
     }).responseXML;
     console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" + stopID);
-    if (doc.childNodes[0].childNodes[1].hasAttribute("dirTitleBecauseNoPredictions")) {
-        predictions+= "No predictions available at the moment. There may be no buses running.";
-    }
     //contains #text as well as directions, directions will contain their respective predictions
     let routes = doc.childNodes[0].childNodes;
     for (let i = 0; i < routes.length; i++) {
@@ -228,10 +227,10 @@ function submit() {
             let curSub = curNode.childNodes;
             for (let j = 0; j < curSub.length; j++) {
                 if (curSub[j].nodeName=="direction") {
+                    found = true;
                     predictions+="<h3>" + curSub[j].getAttribute("title") + "</h3>";
                     //that's right, it's 2am so this is what I'm doing now I guess
                     let curSubSub = curSub[j].childNodes;
-                    console.log(curSubSub);
                     for (let k = 0; k < curSubSub.length; k++) {
                         if (curSubSub[k].nodeName=="prediction") {
                             //new time object
@@ -247,6 +246,9 @@ function submit() {
                 }
             }
         }
+    }
+    if (found===false) {
+        predictions+= "No predictions available at the moment. There may be no buses running.";
     }
     predHandle();
 }

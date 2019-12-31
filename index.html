@@ -26,13 +26,24 @@
         <br><button id="submit" class="button" onclick="submit(); clearBoth(); updateID();">Go</button>
     </div>
 </div>
-<br><div id="predictions" class = "border" style="width: 880px; opacity: 0">
-    <h2 id="stopName"></h2>
-    <h3 id="dirName"></h3>
-    <p id="printPre"></p>
-    <hr>
-    <p id="count"></p>
-    <p id="lastRef"></p>
+<br><div id="predictions">
+    <div class = "border" style="width: 880px; opacity: 0">
+        <h2 id="stopName"></h2>
+        <h3 id="dirName"></h3>
+        <p id="printPre"></p>
+        <hr>
+        <p id="count"></p>
+        <p id="lastRef"></p>
+    </div>
+    <div id="map"></div>
+    <script>
+        function initMap() {
+            let uluru = {lat: -25.344, lng: 131.036};
+            let map = new google.maps.Map(document.getElementById("map"), {zoom: 4, center: uluru});
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCGg-xylBsB8hCijWQmsPp4vXgyauhnek&callback=initMap">
+    </script>
 </div>
 <script src="./script.js"></script>
 </body>

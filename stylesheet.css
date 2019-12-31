@@ -34,10 +34,16 @@
     width: 420px;
     height: 30px;
 }
-#predictions {
-    transition: opacity 1s;
+#map {
+    height: 400px;
+    width: 400px;
 }
 #parent {
+    display: flex;
+}
+#predictions {
+    opacity: 0%;
+    transition: opacity 1s;
     display: flex;
 }
 #stopID {
