@@ -34,10 +34,6 @@
     width: 420px;
     height: 30px;
 }
-#map {
-    height: 400px;
-    width: 400px;
-}
 #parent {
     display: flex;
 }
