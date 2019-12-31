@@ -26,8 +26,8 @@
         <br><button id="submit" class="button" onclick="submit(); clearBoth(); updateID();">Go</button>
     </div>
 </div>
-<br><div id="predictions">
-    <div class = "border" style="width: 880px; opacity: 0">
+<br><div id="predictions" style="opacity: 0;">
+    <div class="border" style="width: 880px;">
         <h2 id="stopName"></h2>
         <h3 id="dirName"></h3>
         <p id="printPre"></p>
@@ -35,7 +35,7 @@
         <p id="count"></p>
         <p id="lastRef"></p>
     </div>
-    <div id="map"></div>
+    <div id="map" class="border"></div>
     <script>
         function initMap() {
             let uluru = {lat: -25.344, lng: 131.036};
