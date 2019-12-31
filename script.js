@@ -30,7 +30,7 @@ let stopLon = 0;
 let curRoute;
 //array of map elements for deletion
 let mapDump = [];
-//an array of google lat/lng coordinates for route line
+//a 2d array of google lat/lng coordinates for route line
 let routeLine = [];
 //sets current route
 function changeRoute() {
@@ -289,6 +289,7 @@ function setMap() {
     console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute);
     //contains stops, routes, directions,#text...
     let allRoutes = doc.childNodes[0].childNodes[1].childNodes;
+    let dirCount = 0;
     for (let i = 0; i < allRoutes.length; i++) {
         //incremented current node
         let curNode = allRoutes[i];
@@ -299,14 +300,17 @@ function setMap() {
             console.log("lat: " + stopLat + " lon: " + stopLon);
             initMap();
         }
+        //counter for routeLine
         else if (curNode.nodeName == "path") {
+            routeLine[dirCount] = [];
             for (let j = 0; j < curNode.childNodes.length; j++) {
                 //incremented childNodes
                 let curSub = curNode.childNodes[j];
                 if (curSub.nodeName == "point") {
-                    routeLine.push(new google.maps.LatLng(parseFloat(curSub.getAttribute("lat")), parseFloat(curSub.getAttribute("lon"))));
+                    routeLine[dirCount].push(new google.maps.LatLng(parseFloat(curSub.getAttribute("lat")), parseFloat(curSub.getAttribute("lon"))));
                 }
             }
+            dirCount++;
         }
     }
 }
@@ -321,14 +325,16 @@ function initMap() {
         map: map,
     });
     mapDump.push(marker);
-    let fullRoute = new google.maps.Polyline({
-        path: routeLine,
-        strokeColor: "#FF0000",
-        strokeOpacity: 0.5,
-        strokeWeight: 2
-    })
-    fullRoute.setMap(map);
-    mapDump.push(fullRoute);
+    for (let i = 0; i < routeLine.length; i++) {
+        let fullRoute = new google.maps.Polyline({
+            path: routeLine[i],
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.5,
+            strokeWeight: 2
+        });
+        fullRoute.setMap(map);
+        mapDump.push(fullRoute);
+    }
 }
 
 //site initialization
