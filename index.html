@@ -21,17 +21,18 @@
     </div>
     <div id="stopID" class="border">
         <h2>Select by stop number</h2>
-        <label for="stopFill" style="color: black">Enter stop number:</label>
+        <label for="stopFill" style="color: white; font-size: 110%">Enter stop number:</label>
         <input id="stopFill" type="number">
+        <br><button id="submit" class="button" onclick="submit(); clearBoth(); update();">Go</button>
     </div>
-    <br><div id="predictions" class = "border" style="width: 880px; opacity: 0">
-        <h2 id="stopName"></h2>
-        <h3 id="dirName"></h3>
-        <p id="printPre"></p>
-        <hr>
-        <p id="count"></p>
-        <p id="lastRef"></p>
-    </div>
+</div>
+<br><div id="predictions" class = "border" style="width: 880px; opacity: 0">
+    <h2 id="stopName"></h2>
+    <h3 id="dirName"></h3>
+    <p id="printPre"></p>
+    <hr>
+    <p id="count"></p>
+    <p id="lastRef"></p>
 </div>
 <script src="./script.js"></script>
 </body>

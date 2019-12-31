@@ -164,11 +164,15 @@ function predict() {
             }
         }
     }
+    console.log(predictions);
+    predHandle();
+}
+//handles appending predictions, wipes variables
+function predHandle() {
     //final prediction printed
     document.getElementById("printPre").innerHTML = predictions;
     document.getElementById("predictions").style.opacity = "1";
     lastRef = new Date();
-    console.log(lastRef);
     document.getElementById("lastRef").innerHTML = ("Last updated: " + monthNames[lastRef.getMonth()] + " " +
         ("0" + lastRef.getDate()).slice(-2) + ", " + lastRef.getFullYear() + " at " + ("0" + lastRef.getHours()).slice(-2) + ":" +
         ("0" + lastRef.getMinutes()).slice(-2) + ":" + ("0" + lastRef.getSeconds()).slice(-2));
@@ -190,6 +194,53 @@ function clearBoth() {
     clearInterval(timer);
     clearInterval(counter);
     countNum = 0;
+}
+//function starts on submission of stopID input
+function submit() {
+    document.getElementById("stopName").innerHTML = "Stop number " + document.getElementById("stopFill").value;
+    const doc = $.ajax({
+        type: "GET",
+        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" +
+            document.getElementById("stopFill").value,
+        xml: "xml",
+        async: false,
+    }).responseXML;
+    console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" +
+        document.getElementById("stopFill").value);
+    if (doc.childNodes[0].childNodes[1].hasAttribute("dirTitleBecauseNoPredictions")) {
+        predictions+= "No predictions available at the moment. There may be no buses running.";
+    }
+    //contains #text as well as directions, directions will contain their respective predictions
+    let routes = doc.childNodes[0].childNodes;
+    for (let i = 0; i < routes.length; i++) {
+        //incremented current node
+        let curNode = routes[i];
+        if (curNode.nodeName!=="#text" && !curNode.hasAttribute("dirTitleBecauseNoPredictions")) {
+            //incremented current node, child of curNode
+            let curSub = curNode.childNodes;
+            for (let j = 0; j < curSub.length; j++) {
+                if (curSub[j].nodeName=="direction") {
+                    predictions+="<h3>" + curSub[j].getAttribute("title") + "</h3>";
+                    //that's right, it's 2am so this is what I'm doing now I guess
+                    let curSubSub = curSub[j].childNodes;
+                    console.log(curSubSub);
+                    for (let k = 0; k < curSubSub.length; k++) {
+                        if (curSubSub[k].nodeName=="prediction") {
+                            //new time object
+                            let current = new Date();
+                            let seconds = curSubSub[k].getAttribute("seconds");
+                            //seconds is multiplied by 1000 as js works with milliseconds
+                            current = new Date(current.getTime() + seconds*1000);
+                            predictions+= "<p>" +curSubSub[k].getAttribute("branch") + " - Bus #" + curSubSub[k].getAttribute("vehicle") + " - in " +
+                                Math.floor(seconds/60) + " min " + seconds%60 + " sec - ETA " + ("0" + current.getHours()).slice(-2) + ":" +
+                                ("0" + current.getMinutes()).slice(-2) + "</p>";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    predHandle();
 }
 //site initialization
 //retrieves route info
@@ -234,6 +285,12 @@ for (let i = 0; i < routes.length; i++) {
         selRoute.appendChild(opt);
     }
 }
+document.getElementById("stopFill").addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        document.getElementById("submit").click();
+    }
+});
 //appends menus to DOM
 document.getElementById("routes").append(selRoute);
 document.getElementById("dirs").append(selDir);

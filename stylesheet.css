@@ -17,6 +17,17 @@
 .border:hover {
     box-shadow: 5px 5px 5px grey;
 }
+.button {
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    width: 50px;
+    height: 25px;
+    font-size: 110%;
+}
+.button:hover {
+    box-shadow: 5px 5px 5px grey;
+}
 .menu {
     font-size: 110%;
     font-family: Verdana, serif;
@@ -32,7 +43,7 @@
 #stopID {
     margin-left: 25px;
     width: 840px;
-    height: 120px;
+    height: 140px;
 }
 #stopFill {
     font-size: 110%;
