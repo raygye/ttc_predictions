@@ -19,6 +19,8 @@ let monthNames = [
     "August", "September", "October",
     "November", "December"
 ];
+//variable storing stopID
+let stopID;
 //for debugging
 function changeRoute() {
     let newRoute = document.getElementById("selRoute").value;
@@ -184,6 +186,11 @@ function update() {
     timer = setInterval(predict, 5000);
     counter = setInterval(counting, 1000);
 }
+//same function, for stopID
+function updateID() {
+    timer = setInterval(submit, 5000);
+    counter = setInterval(counting, 1000);
+}
 //will increment per second
 function counting() {
     countNum++;
@@ -197,16 +204,17 @@ function clearBoth() {
 }
 //function starts on submission of stopID input
 function submit() {
-    document.getElementById("stopName").innerHTML = "Stop number " + document.getElementById("stopFill").value;
+    //must clear dirName in case it was used by other menu
+    document.getElementById("dirName").innerHTML = "";
+    stopID = document.getElementById("stopFill").value;
+    document.getElementById("stopName").innerHTML = "Stop number " + stopID;
     const doc = $.ajax({
         type: "GET",
-        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" +
-            document.getElementById("stopFill").value,
+        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" + stopID,
         xml: "xml",
         async: false,
     }).responseXML;
-    console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" +
-        document.getElementById("stopFill").value);
+    console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" + stopID);
     if (doc.childNodes[0].childNodes[1].hasAttribute("dirTitleBecauseNoPredictions")) {
         predictions+= "No predictions available at the moment. There may be no buses running.";
     }
