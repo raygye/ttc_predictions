@@ -20,13 +20,22 @@ let monthNames = [
     "November", "December"
 ];
 //variable storing stopID
-let stopID;
+let stopID = -1;
 //prediction to be printed if other routes are available
 let subPrint;
-//for debugging
+//stores lat/lon
+let stopLat = 0;
+let stopLon = 0;
+//current route
+let curRoute;
+//array of map elements for deletion
+let mapDump = [];
+//an array of google lat/lng coordinates for route line
+let routeLine = [];
+//sets current route
 function changeRoute() {
-    let newRoute = document.getElementById("selRoute").value;
-    console.log(newRoute);
+    curRoute = document.getElementById("selRoute").value;
+    console.log(curRoute);
 }
 
 //empties selection menus
@@ -39,7 +48,7 @@ function empty(select) {
 //sets default menu options
 function defOption(el) {
     el.setAttribute("selected", "");
-    el.setAttribute("hidden", "")
+    el.setAttribute("hidden", "");
     if (el===routeDef) {
         el.innerHTML = "Select a route";
     }
@@ -100,7 +109,7 @@ function setStops() {
         xml: "xml",
         async: false,
     }).responseXML;
-    //contains stops,routes, directions,#text...
+    //contains stops, routes, directions,#text...
     let allRoutes = doc.childNodes[0].childNodes[1].childNodes;
     for (let i = 0; i < dirs.length; i++) {
         if (i == selDir.value) {
@@ -120,6 +129,7 @@ function setStops() {
         }
     }
 }
+
 function predict() {
     document.getElementById("stopName").innerHTML = $("#selStop option:selected").text();
     document.getElementById("dirName").innerHTML = $("#selDir option:selected").text();
@@ -170,6 +180,7 @@ function predict() {
     }
     predHandle();
 }
+
 //handles appending predictions, wipes variables
 function predHandle() {
     //final prediction printed
@@ -186,30 +197,38 @@ function predHandle() {
         ("0" + lastRef.getMinutes()).slice(-2) + ":" + ("0" + lastRef.getSeconds()).slice(-2));
     //clear predictions for next use
     predictions = "";
+    subPrint = "";
     //reset found boolean
     found = false;
+    //generate map
+    setMap();
 }
+
 //sets intervals for updates and update countdown clock
 function update() {
     timer = setInterval(predict, 5000);
     counter = setInterval(counting, 1000);
 }
+
 //same function, for stopID
 function updateID() {
     timer = setInterval(submit, 5000);
     counter = setInterval(counting, 1000);
 }
+
 //will increment per second
 function counting() {
     countNum++;
     document.getElementById("count").innerHTML = "Refreshing in " + (5-(countNum%5)) + " second(s)";
 }
+
 //clears both update and update countdown clock
 function clearBoth() {
     clearInterval(timer);
     clearInterval(counter);
     countNum = 0;
 }
+
 //function starts on submission of stopID input
 function submit() {
     //must clear dirName in case it was used by other menu
@@ -225,6 +244,7 @@ function submit() {
     console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" + stopID);
     //contains #text as well as directions, directions will contain their respective predictions
     let routes = doc.childNodes[0].childNodes;
+    curRoute = routes[1].getAttribute("routeTag");
     for (let i = 0; i < routes.length; i++) {
         //incremented current node
         let curNode = routes[i];
@@ -254,10 +274,63 @@ function submit() {
         }
     }
     if (found===false) {
-        predictions+= "No predictions available at the moment. There may be no buses running.";
+        predictions+= "No predictions available at the moment. There may be no buses running or the stop number may not exist.";
     }
     predHandle();
 }
+
+function setMap() {
+    const doc = $.ajax({
+        type: "GET",
+        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute,
+        xml: "xml",
+        async: false,
+    }).responseXML;
+    console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute);
+    //contains stops, routes, directions,#text...
+    let allRoutes = doc.childNodes[0].childNodes[1].childNodes;
+    for (let i = 0; i < allRoutes.length; i++) {
+        //incremented current node
+        let curNode = allRoutes[i];
+        if (curNode.nodeName == "stop" && (curNode.getAttribute("title") == $("#selStop option:selected").text() ||
+            curNode.getAttribute("stopId") == stopID)) {
+            stopLat = parseFloat(curNode.getAttribute("lat"));
+            stopLon = parseFloat(curNode.getAttribute("lon"));
+            console.log("lat: " + stopLat + " lon: " + stopLon);
+            initMap();
+        }
+        else if (curNode.nodeName == "path") {
+            for (let j = 0; j < curNode.childNodes.length; j++) {
+                //incremented childNodes
+                let curSub = curNode.childNodes[j];
+                if (curSub.nodeName == "point") {
+                    routeLine.push(new google.maps.LatLng(parseFloat(curSub.getAttribute("lat")), parseFloat(curSub.getAttribute("lon"))));
+                }
+            }
+        }
+    }
+}
+function initMap() {
+    let theStop = {lat: stopLat, lng: stopLon};
+    let map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        center: theStop
+    });
+    let marker = new google.maps.Marker({
+        position: theStop,
+        map: map,
+    });
+    mapDump.push(marker);
+    let fullRoute = new google.maps.Polyline({
+        path: routeLine,
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.5,
+        strokeWeight: 2
+    })
+    fullRoute.setMap(map);
+    mapDump.push(fullRoute);
+}
+
 //site initialization
 //retrieves route info
 const doc = $.ajax({
