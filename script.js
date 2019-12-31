@@ -137,7 +137,7 @@ function predict() {
         //incremented current node
         let curNode = directions[i];
         //make sure we have found the appropriate direction
-        if (curNode.nodeName=="direction" && $("#selDir option:selected").text()==curNode.getAttribute("title")) {
+        if (curNode.nodeName=="direction" && $("#selDir option:selected").text().includes(curNode.getAttribute("title"))) {
             found = true;
             for (let j = 0; j < curNode.childNodes.length; j++) {
                 //incremented current node for predictions (the child node of direction)
@@ -168,8 +168,9 @@ function predict() {
     document.getElementById("printPre").innerHTML = predictions;
     document.getElementById("predictions").style.opacity = "1";
     lastRef = new Date();
+    console.log(lastRef);
     document.getElementById("lastRef").innerHTML = ("Last updated: " + monthNames[lastRef.getMonth()] + " " +
-        ("0" + lastRef.getDay()).slice(-2) + ", " + lastRef.getFullYear() + " at " + ("0" + lastRef.getHours()).slice(-2) + ":" +
+        ("0" + lastRef.getDate()).slice(-2) + ", " + lastRef.getFullYear() + " at " + ("0" + lastRef.getHours()).slice(-2) + ":" +
         ("0" + lastRef.getMinutes()).slice(-2) + ":" + ("0" + lastRef.getSeconds()).slice(-2));
     //clear predictions for next use
     predictions = "";
