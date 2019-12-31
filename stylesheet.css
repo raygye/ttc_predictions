@@ -14,17 +14,25 @@
     color: white;
     font-family: Verdana, serif;
 }
+.border:hover {
+    box-shadow: 5px 5px 5px grey;
+}
 .menu {
     font-size: 110%;
     font-family: Verdana, serif;
     width: 420px;
     height: 30px;
 }
-
 #predictions {
     transition: opacity 1s;
 }
-
+#parent {
+    display: flex;
+}
+#stopID {
+    margin-left: 25px;
+    width: 840px;
+}
 body {
     background-image: url("daniel-salgado-igRWvbLxGjw-unsplash.jpg");
     background-repeat: no-repeat;
