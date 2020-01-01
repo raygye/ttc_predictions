@@ -215,7 +215,7 @@ function predHandle() {
 function update() {
     timer = setInterval(predict, 5000);
     counter = setInterval(counting, 1000);
-    mapTimer = setInterval(initMap, 15000);
+    mapTimer = setInterval(initMap, 30000);
 }
 
 //same function, for stopID
