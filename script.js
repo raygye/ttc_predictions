@@ -8,6 +8,10 @@ let found = false;
 let timer;
 //variable for setting update countdown interval
 let counter;
+//variable for setting map update interval
+let mapTimer;
+//variable for setting map update countdown interval
+let mapCounter;
 //companion variable for counter, actual seconds elapsed, will be %5
 let countNum = 0;
 //variable storing last time refreshed
@@ -28,10 +32,10 @@ let stopLat = 0;
 let stopLon = 0;
 //current route
 let curRoute;
-//array of map elements for deletion
-let mapDump = [];
 //a 2d array of google lat/lng coordinates for route line
 let routeLine = [];
+//variable for epoch time of last return
+let epoch = "0";
 //sets current route
 function changeRoute() {
     curRoute = document.getElementById("selRoute").value;
@@ -65,6 +69,9 @@ function setDir() {
     dirDef.innerHTML = "Select a direction";
     //clear refresh timer
     document.getElementById("count").innerHTML = "";
+    //clear map refresh timer
+    document.getElementById("mapCount").innerHTML = "";
+
     const doc = $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + document.getElementById("selRoute").value,
@@ -103,6 +110,8 @@ function setStops() {
     stopDef.innerHTML = "Select a stop";
     //clear refresh timer
     document.getElementById("count").innerHTML = "";
+    //clear map refresh timer
+    document.getElementById("mapCount").innerHTML = "";
     const doc = $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + document.getElementById("selRoute").value,
@@ -143,7 +152,7 @@ function predict() {
     console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
         "&s=" + document.getElementById("selStop").value);
     if (doc.childNodes[0].childNodes[1].hasAttribute("dirTitleBecauseNoPredictions")) {
-        predictions+= "No predictions available at the moment. There may be no buses running.";
+        predictions+= "No predictions available at the moment. There may be no vehicles running.";
     }
     //contains #text as well as directions, directions will contain their respective predictions
     let directions = doc.childNodes[0].childNodes[1].childNodes;
@@ -171,7 +180,7 @@ function predict() {
         //accommodates the case where other direction's buses are available
          else if (curNode.nodeName=="direction" && found === false){
             if (subPrint==="") {
-                subPrint+="No buses available for this direction, but available for: " + curNode.getAttribute("title");
+                subPrint+="No vehicles available for this direction, but available for: " + curNode.getAttribute("title");
             }
             else {
                 subPrint+=", " + curNode.getAttribute("title");
@@ -206,24 +215,28 @@ function predHandle() {
 function update() {
     timer = setInterval(predict, 5000);
     counter = setInterval(counting, 1000);
+    mapTimer = setInterval(initMap, 15000);
 }
 
 //same function, for stopID
 function updateID() {
     timer = setInterval(submit, 5000);
     counter = setInterval(counting, 1000);
+    mapTimer = setInterval(initMap, 30000);
 }
 
 //will increment per second
 function counting() {
     countNum++;
-    document.getElementById("count").innerHTML = "Refreshing in " + (5-(countNum%5)) + " second(s)";
+    document.getElementById("count").innerHTML = "Predictions refreshing in " + (5-(countNum%5)) + " second(s)";
+    document.getElementById("mapCount").innerHTML = "Map refreshing in " + (30-(countNum%30)) + " second(s)";
 }
 
-//clears both update and update countdown clock
+//clears both update and update countdown clock (it's really "clearAll" now...)
 function clearBoth() {
     clearInterval(timer);
     clearInterval(counter);
+    clearInterval(mapCounter);
     countNum = 0;
 }
 
@@ -242,12 +255,12 @@ function submit() {
     console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" + stopID);
     //contains #text as well as directions, directions will contain their respective predictions
     let routes = doc.childNodes[0].childNodes;
-    curRoute = routes[1].getAttribute("routeTag");
     for (let i = 0; i < routes.length; i++) {
         //incremented current node
         let curNode = routes[i];
         if (curNode.nodeName!=="#text" && !curNode.hasAttribute("dirTitleBecauseNoPredictions")) {
             //incremented current node, child of curNode
+            curRoute = curNode.getAttribute("routeTag");
             let curSub = curNode.childNodes;
             for (let j = 0; j < curSub.length; j++) {
                 if (curSub[j].nodeName=="direction") {
@@ -272,7 +285,7 @@ function submit() {
         }
     }
     if (found===false) {
-        predictions+= "No predictions available at the moment. There may be no buses running or the stop number may not exist.";
+        predictions+= "No predictions available at the moment. There may be no vehicles running or the stop number may not exist.";
     }
     predHandle();
 }
@@ -321,7 +334,6 @@ function initMap() {
         position: theStop,
         map: map,
     });
-    mapDump.push(marker);
     for (let i = 0; i < routeLine.length; i++) {
         let fullRoute = new google.maps.Polyline({
             path: routeLine[i],
@@ -330,7 +342,34 @@ function initMap() {
             strokeWeight: 2
         });
         fullRoute.setMap(map);
-        mapDump.push(fullRoute);
+    }
+    const doc = $.ajax({
+        type: "GET",
+        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=" + epoch,
+        xml: "xml",
+        async: false,
+    }).responseXML;
+    console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=" + epoch);
+    let vehicles = doc.childNodes[0].childNodes
+    for (let i = 0; i < vehicles.length; i++) {
+        let vehicle = vehicles[i];
+            if (vehicle.nodeName == "vehicle") {
+                let pos = new google.maps.LatLng(parseFloat(vehicle.getAttribute("lat")), parseFloat(vehicle.getAttribute("lon")));
+                let icon = {
+                    anchor: new google.maps.Point(0,0),
+                    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                    scale: 5,
+                    rotation: parseInt(vehicle.getAttribute("heading"))
+                }
+                let marker = new google.maps.Marker({
+                    position: pos,
+                    icon: icon
+                });
+                marker.setMap(map);
+            }
+            else if (vehicle.nodeName == "lastTime") {
+                epoch = vehicle.getAttribute("time");
+            }
     }
 }
 
