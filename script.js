@@ -140,8 +140,6 @@ function setStops() {
 }
 
 function predict() {
-    document.getElementById("stopName").innerHTML = $("#selStop option:selected").text();
-    document.getElementById("dirName").innerHTML = $("#selDir option:selected").text();
     const doc = $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
@@ -160,7 +158,8 @@ function predict() {
         //incremented current node
         let curNode = directions[i];
         //make sure we have found the appropriate direction
-        if (curNode.nodeName=="direction" && $("#selDir option:selected").text().includes(curNode.getAttribute("title"))) {
+        if (curNode.nodeName=="direction") {
+            predictions+="<h3>" + curNode.getAttribute("title") + "</h3>";
             found = true;
             for (let j = 0; j < curNode.childNodes.length; j++) {
                 //incremented current node for predictions (the child node of direction)
@@ -171,9 +170,9 @@ function predict() {
                     let seconds = curSub.getAttribute("seconds");
                     //seconds is multiplied by 1000 as js works with milliseconds
                     current = new Date(current.getTime() + seconds*1000);
-                    predictions+=selRoute.value + " - Bus #" + curSub.getAttribute("vehicle") + " - in " +
+                    predictions+= "<p>" + selRoute.value + " - Bus #" + curSub.getAttribute("vehicle") + " - in " +
                         Math.floor(seconds/60) + " min " + seconds%60 + " sec - ETA " + ("0" + current.getHours()).slice(-2) + ":" +
-                        ("0" + current.getMinutes()).slice(-2) + "<br>";
+                        ("0" + current.getMinutes()).slice(-2) + "</p>";
                 }
             }
         }
@@ -242,8 +241,6 @@ function clearBoth() {
 
 //function starts on submission of stopID input
 function submit() {
-    //must clear dirName in case it was used by other menu
-    document.getElementById("dirName").innerHTML = "";
     stopID = document.getElementById("stopFill").value;
     document.getElementById("stopName").innerHTML = "Stop number " + stopID;
     const doc = $.ajax({
