@@ -10,8 +10,6 @@ let timer;
 let counter;
 //variable for setting map update interval
 let mapTimer;
-//variable for setting map update countdown interval
-let mapCounter;
 //companion variable for counter, actual seconds elapsed, will be %5
 let countNum = 0;
 //variable storing last time refreshed
@@ -235,7 +233,7 @@ function counting() {
 function clearBoth() {
     clearInterval(timer);
     clearInterval(counter);
-    clearInterval(mapCounter);
+    clearInterval(mapTimer);
     countNum = 0;
 }
 
