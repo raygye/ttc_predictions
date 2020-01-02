@@ -150,6 +150,8 @@ function predict() {
     if (doc.childNodes[0].childNodes[1].hasAttribute("dirTitleBecauseNoPredictions")) {
         predictions+= "No predictions available at the moment. There may be no vehicles running.";
     }
+    //set stop name
+    document.getElementById("stopName").innerHTML = doc.childNodes[0].childNodes[1].getAttribute("stopTitle");
     //contains #text as well as directions, directions will contain their respective predictions
     let directions = doc.childNodes[0].childNodes[1].childNodes;
     for (let i = 0; i < directions.length; i++) {
