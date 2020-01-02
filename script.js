@@ -214,14 +214,14 @@ function predHandle() {
 function update() {
     timer = setInterval(predict, 5000);
     counter = setInterval(counting, 1000);
-    mapTimer = setInterval(initMap, 30000);
+    mapTimer = setInterval(setMap, 30000);
 }
 
 //same function, for stopID
 function updateID() {
     timer = setInterval(submit, 5000);
     counter = setInterval(counting, 1000);
-    mapTimer = setInterval(initMap, 30000);
+    mapTimer = setInterval(setMap, 30000);
 }
 
 //will increment per second
@@ -340,6 +340,7 @@ function initMap() {
         });
         fullRoute.setMap(map);
     }
+    routeLine = [];
     const doc = $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=" + epoch,
