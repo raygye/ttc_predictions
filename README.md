@@ -11,6 +11,6 @@ seconds to accommodate the irregularity of vehicle GPS updates.
 Predictions can be selected either by route or by stop number, accepted 
 through their respective menus.
 
-Please mind the "This page can't load  Google Maps correctly." pop-up 
-as well as the "For developmental purposes only" overlay. I did not wish
-to set up a billing account for Google Cloud.
+If there is a "This page can't load  Google Maps correctly." pop-up 
+as well as the "For developmental purposes only" overlay, the project is 
+no longer on my Google billing plan.
