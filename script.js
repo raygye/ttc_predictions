@@ -34,6 +34,13 @@ let curRoute;
 let routeLine = [];
 //variable for epoch time of last return
 let epoch = "0";
+//set key
+let script = document.createElement("script");
+script.setAttribute("async", "");
+script.setAttribute("defer", "");
+script.setAttribute("src",
+    atob("aHR0cHM6Ly9tYXBzLmdvb2dsZWFwaXMuY29tL21hcHMvYXBpL2pzP2tleT1BSXphU3lDQ0dnLXh5bEJzQjhoQ2lqV1Ftc1BwNHZYZ3lhdWhuZWsNCg=="));
+document.getElementById("predictions").appendChild(script);
 //sets current route
 function changeRoute() {
     curRoute = document.getElementById("selRoute").value;
