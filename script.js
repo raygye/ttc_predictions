@@ -127,12 +127,12 @@ function setStops() {
         //contains stops, routes, directions,#text...
         let allRoutes = doc.childNodes[0].childNodes[1].childNodes;
         for (let i = 0; i < dirs.length; i++) {
-            if (i == selDir.value) {
+            if (i === selDir.value) {
                 for (let j = 0; j < dirs[i].length; j++) {
                     for (let k = 0; k < allRoutes.length; k++) {
                         //incremented current node
                         let curNode = allRoutes[k];
-                        if (curNode.nodeName!=="#text" && curNode.getAttribute("tag") == dirs[i][j]) {
+                        if (curNode.nodeName!=="#text" && curNode.getAttribute("tag") === dirs[i][j]) {
                             let opt = document.createElement("option");
                             //stop tags are used for predictions
                             opt.value = curNode.getAttribute("tag");
@@ -173,7 +173,7 @@ function predict() {
                 for (let j = 0; j < curNode.childNodes.length; j++) {
                     //incremented current node for predictions (the child node of direction)
                     let curSub = curNode.childNodes[j];
-                    if (curSub.nodeName=="prediction") {
+                    if (curSub.nodeName==="prediction") {
                         //new time object
                         let current = new Date();
                         let seconds = curSub.getAttribute("seconds");
@@ -186,7 +186,7 @@ function predict() {
                 }
             }
             //accommodates the case where other direction's buses are available
-            else if (curNode.nodeName=="direction" && found === false){
+            else if (curNode.nodeName==="direction" && found === false){
                 if (subPrint==="") {
                     subPrint+="No vehicles available for this direction, but available for: " + curNode.getAttribute("title");
                 }
@@ -270,13 +270,13 @@ function submit() {
                 curRoute = curNode.getAttribute("routeTag");
                 let curSub = curNode.childNodes;
                 for (let j = 0; j < curSub.length; j++) {
-                    if (curSub[j].nodeName=="direction") {
+                    if (curSub[j].nodeName==="direction") {
                         found = true;
                         predictions+="<h3>" + curSub[j].getAttribute("title") + "</h3>";
                         //that's right, it's 2am so this is what I'm doing now I guess
                         let curSubSub = curSub[j].childNodes;
                         for (let k = 0; k < curSubSub.length; k++) {
-                            if (curSubSub[k].nodeName=="prediction") {
+                            if (curSubSub[k].nodeName==="prediction") {
                                 //new time object
                                 let current = new Date();
                                 let seconds = curSubSub[k].getAttribute("seconds");
@@ -312,18 +312,18 @@ function setMap() {
         for (let i = 0; i < allRoutes.length; i++) {
             //incremented current node
             let curNode = allRoutes[i];
-            if (curNode.nodeName == "stop" && (curNode.getAttribute("title") == $("#selStop option:selected").text() ||
-                curNode.getAttribute("stopId") == stopID)) {
+            if (curNode.nodeName === "stop" && (curNode.getAttribute("title") === $("#selStop option:selected").text() ||
+                curNode.getAttribute("stopId") === stopID)) {
                 stopLat = parseFloat(curNode.getAttribute("lat"));
                 stopLon = parseFloat(curNode.getAttribute("lon"));
             }
             //counter for routeLine
-            else if (curNode.nodeName == "path") {
+            else if (curNode.nodeName === "path") {
                 routeLine[dirCount] = [];
                 for (let j = 0; j < curNode.childNodes.length; j++) {
                     //incremented childNodes
                     let curSub = curNode.childNodes[j];
-                    if (curSub.nodeName == "point") {
+                    if (curSub.nodeName === "point") {
                         routeLine[dirCount].push(new google.maps.LatLng(parseFloat(curSub.getAttribute("lat")), parseFloat(curSub.getAttribute("lon"))));
                     }
                 }
@@ -361,24 +361,24 @@ function initMap() {
         async: true,
     }).done(function (doc) {
         console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=" + epoch);
-        let vehicles = doc.childNodes[0].childNodes
+        let vehicles = doc.childNodes[0].childNodes;
         for (let i = 0; i < vehicles.length; i++) {
             let vehicle = vehicles[i];
-            if (vehicle.nodeName == "vehicle") {
+            if (vehicle.nodeName === "vehicle") {
                 let pos = new google.maps.LatLng(parseFloat(vehicle.getAttribute("lat")), parseFloat(vehicle.getAttribute("lon")));
                 let icon = {
                     anchor: new google.maps.Point(0,0),
                     path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
                     scale: 5,
                     rotation: parseInt(vehicle.getAttribute("heading"))
-                }
+                };
                 let marker = new google.maps.Marker({
                     position: pos,
                     icon: icon
                 });
                 marker.setMap(map);
             }
-            else if (vehicle.nodeName == "lastTime") {
+            else if (vehicle.nodeName === "lastTime") {
                 epoch = vehicle.getAttribute("time");
             }
         }
