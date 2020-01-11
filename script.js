@@ -127,12 +127,12 @@ function setStops() {
         //contains stops, routes, directions,#text...
         let allRoutes = doc.childNodes[0].childNodes[1].childNodes;
         for (let i = 0; i < dirs.length; i++) {
-            if (i === selDir.value) {
+            if (i == selDir.value) {
                 for (let j = 0; j < dirs[i].length; j++) {
                     for (let k = 0; k < allRoutes.length; k++) {
                         //incremented current node
                         let curNode = allRoutes[k];
-                        if (curNode.nodeName!=="#text" && curNode.getAttribute("tag") === dirs[i][j]) {
+                        if (curNode.nodeName!=="#text" && curNode.getAttribute("tag") == dirs[i][j]) {
                             let opt = document.createElement("option");
                             //stop tags are used for predictions
                             opt.value = curNode.getAttribute("tag");
@@ -167,7 +167,7 @@ function predict() {
             //incremented current node
             let curNode = directions[i];
             //make sure we have found the appropriate direction
-            if (curNode.nodeName=="direction") {
+            if (curNode.nodeName==="direction") {
                 predictions+="<h3>" + curNode.getAttribute("title") + "</h3>";
                 found = true;
                 for (let j = 0; j < curNode.childNodes.length; j++) {
