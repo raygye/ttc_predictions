@@ -299,38 +299,40 @@ function submit() {
 }
 
 function setMap() {
-    const doc = $.ajax({
+    $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute,
         xml: "xml",
         async: false,
-    }).responseXML;
-    console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute);
-    //contains stops, routes, directions,#text...
-    let allRoutes = doc.childNodes[0].childNodes[1].childNodes;
-    let dirCount = 0;
-    for (let i = 0; i < allRoutes.length; i++) {
-        //incremented current node
-        let curNode = allRoutes[i];
-        if (curNode.nodeName == "stop" && (curNode.getAttribute("title") == $("#selStop option:selected").text() ||
-            curNode.getAttribute("stopId") == stopID)) {
-            stopLat = parseFloat(curNode.getAttribute("lat"));
-            stopLon = parseFloat(curNode.getAttribute("lon"));
-        }
-        //counter for routeLine
-        else if (curNode.nodeName == "path") {
-            routeLine[dirCount] = [];
-            for (let j = 0; j < curNode.childNodes.length; j++) {
-                //incremented childNodes
-                let curSub = curNode.childNodes[j];
-                if (curSub.nodeName == "point") {
-                    routeLine[dirCount].push(new google.maps.LatLng(parseFloat(curSub.getAttribute("lat")), parseFloat(curSub.getAttribute("lon"))));
-                }
+    }).done(function(doc) {
+        console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute);
+        //contains stops, routes, directions,#text...
+        let allRoutes = doc.childNodes[0].childNodes[1].childNodes;
+        let dirCount = 0;
+        for (let i = 0; i < allRoutes.length; i++) {
+            //incremented current node
+            let curNode = allRoutes[i];
+            if (curNode.nodeName == "stop" && (curNode.getAttribute("title") == $("#selStop option:selected").text() ||
+                curNode.getAttribute("stopId") == stopID)) {
+                stopLat = parseFloat(curNode.getAttribute("lat"));
+                stopLon = parseFloat(curNode.getAttribute("lon"));
             }
-            dirCount++;
+            //counter for routeLine
+            else if (curNode.nodeName == "path") {
+                routeLine[dirCount] = [];
+                for (let j = 0; j < curNode.childNodes.length; j++) {
+                    //incremented childNodes
+                    let curSub = curNode.childNodes[j];
+                    if (curSub.nodeName == "point") {
+                        routeLine[dirCount].push(new google.maps.LatLng(parseFloat(curSub.getAttribute("lat")), parseFloat(curSub.getAttribute("lon"))));
+                    }
+                }
+                dirCount++;
+            }
         }
-    }
-    initMap();
+        initMap();
+    })
+
 }
 function initMap() {
     let theStop = {lat: stopLat, lng: stopLon};
