@@ -81,32 +81,33 @@ function setDir() {
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + document.getElementById("selRoute").value,
         xml: "xml",
-        async: false,
-    }).responseXML;
-    //contains stops,routes, directions,#text...
-    let directions = doc.childNodes[0].childNodes[1].childNodes;
-    //clear previous route's direction selection
-    empty(selDir);
-    //dirCount required as size of direction array is not equal to length of nodes (#text nodes exist)
-    let dirCount = 0;
-    for (let i = 0; i < directions.length; i++) {
-        //incremented current node
-        let curNode = directions[i];
-        if (curNode.nodeName === "direction") {
-            let opt = document.createElement("option");
-            opt.value = dirCount.toString();
-            opt.innerHTML = curNode.getAttribute("title");
-            let stops = curNode.childNodes;
-            dirs[dirCount] = [];
-            for (let j = 0; j < stops.length; j++) {
-                if (stops[j].nodeName !== "#text") {
-                    dirs[dirCount].push(stops[j].getAttribute("tag"));
+        async: true,
+    }).done(function(doc) {
+        //contains stops,routes, directions,#text...
+        let directions = doc.childNodes[0].childNodes[1].childNodes;
+        //clear previous route's direction selection
+        empty(selDir);
+        //dirCount required as size of direction array is not equal to length of nodes (#text nodes exist)
+        let dirCount = 0;
+        for (let i = 0; i < directions.length; i++) {
+            //incremented current node
+            let curNode = directions[i];
+            if (curNode.nodeName === "direction") {
+                let opt = document.createElement("option");
+                opt.value = dirCount.toString();
+                opt.innerHTML = curNode.getAttribute("title");
+                let stops = curNode.childNodes;
+                dirs[dirCount] = [];
+                for (let j = 0; j < stops.length; j++) {
+                    if (stops[j].nodeName !== "#text") {
+                        dirs[dirCount].push(stops[j].getAttribute("tag"));
+                    }
                 }
+                selDir.appendChild(opt);
+                dirCount++;
             }
-            selDir.appendChild(opt);
-            dirCount++;
         }
-    }
+    });
 }
 
 function setStops() {
@@ -117,83 +118,85 @@ function setStops() {
     document.getElementById("count").innerHTML = "";
     //clear map refresh timer
     document.getElementById("mapCount").innerHTML = "";
-    const doc = $.ajax({
+    $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + document.getElementById("selRoute").value,
         xml: "xml",
-        async: false,
-    }).responseXML;
-    //contains stops, routes, directions,#text...
-    let allRoutes = doc.childNodes[0].childNodes[1].childNodes;
-    for (let i = 0; i < dirs.length; i++) {
-        if (i == selDir.value) {
-            for (let j = 0; j < dirs[i].length; j++) {
-                for (let k = 0; k < allRoutes.length; k++) {
-                    //incremented current node
-                    let curNode = allRoutes[k];
-                    if (curNode.nodeName!=="#text" && curNode.getAttribute("tag") == dirs[i][j]) {
-                        let opt = document.createElement("option");
-                        //stop tags are used for predictions
-                        opt.value = curNode.getAttribute("tag");
-                        opt.innerHTML = curNode.getAttribute("title");
-                        selStop.appendChild(opt);
+        async: true,
+    }).done(function(doc) {
+        //contains stops, routes, directions,#text...
+        let allRoutes = doc.childNodes[0].childNodes[1].childNodes;
+        for (let i = 0; i < dirs.length; i++) {
+            if (i == selDir.value) {
+                for (let j = 0; j < dirs[i].length; j++) {
+                    for (let k = 0; k < allRoutes.length; k++) {
+                        //incremented current node
+                        let curNode = allRoutes[k];
+                        if (curNode.nodeName!=="#text" && curNode.getAttribute("tag") == dirs[i][j]) {
+                            let opt = document.createElement("option");
+                            //stop tags are used for predictions
+                            opt.value = curNode.getAttribute("tag");
+                            opt.innerHTML = curNode.getAttribute("title");
+                            selStop.appendChild(opt);
+                        }
                     }
                 }
             }
         }
-    }
+    });
 }
 
 function predict() {
-    const doc = $.ajax({
+    $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
             "&s=" + document.getElementById("selStop").value,
         xml: "xml",
-        async: false,
-    }).responseXML;
-    console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
-        "&s=" + document.getElementById("selStop").value);
-    if (doc.childNodes[0].childNodes[1].hasAttribute("dirTitleBecauseNoPredictions")) {
-        predictions+= "No predictions available at the moment. There may be no vehicles running.";
-    }
-    //set stop name
-    document.getElementById("stopName").innerHTML = doc.childNodes[0].childNodes[1].getAttribute("stopTitle");
-    //contains #text as well as directions, directions will contain their respective predictions
-    let directions = doc.childNodes[0].childNodes[1].childNodes;
-    for (let i = 0; i < directions.length; i++) {
-        //incremented current node
-        let curNode = directions[i];
-        //make sure we have found the appropriate direction
-        if (curNode.nodeName=="direction") {
-            predictions+="<h3>" + curNode.getAttribute("title") + "</h3>";
-            found = true;
-            for (let j = 0; j < curNode.childNodes.length; j++) {
-                //incremented current node for predictions (the child node of direction)
-                let curSub = curNode.childNodes[j];
-                if (curSub.nodeName=="prediction") {
-                    //new time object
-                    let current = new Date();
-                    let seconds = curSub.getAttribute("seconds");
-                    //seconds is multiplied by 1000 as js works with milliseconds
-                    current = new Date(current.getTime() + seconds*1000);
-                    predictions+= "<p>" + selRoute.value + " - Bus #" + curSub.getAttribute("vehicle") + " - in " +
-                        Math.floor(seconds/60) + " min " + seconds%60 + " sec - ETA " + ("0" + current.getHours()).slice(-2) + ":" +
-                        ("0" + current.getMinutes()).slice(-2) + "</p>";
+        async: true,
+    }).done(function(doc) {
+        console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
+            "&s=" + document.getElementById("selStop").value);
+        if (doc.childNodes[0].childNodes[1].hasAttribute("dirTitleBecauseNoPredictions")) {
+            predictions+= "No predictions available at the moment. There may be no vehicles running.";
+        }
+        //set stop name
+        document.getElementById("stopName").innerHTML = doc.childNodes[0].childNodes[1].getAttribute("stopTitle");
+        //contains #text as well as directions, directions will contain their respective predictions
+        let directions = doc.childNodes[0].childNodes[1].childNodes;
+        for (let i = 0; i < directions.length; i++) {
+            //incremented current node
+            let curNode = directions[i];
+            //make sure we have found the appropriate direction
+            if (curNode.nodeName=="direction") {
+                predictions+="<h3>" + curNode.getAttribute("title") + "</h3>";
+                found = true;
+                for (let j = 0; j < curNode.childNodes.length; j++) {
+                    //incremented current node for predictions (the child node of direction)
+                    let curSub = curNode.childNodes[j];
+                    if (curSub.nodeName=="prediction") {
+                        //new time object
+                        let current = new Date();
+                        let seconds = curSub.getAttribute("seconds");
+                        //seconds is multiplied by 1000 as js works with milliseconds
+                        current = new Date(current.getTime() + seconds*1000);
+                        predictions+= "<p>" + selRoute.value + " - Bus #" + curSub.getAttribute("vehicle") + " - in " +
+                            Math.floor(seconds/60) + " min " + seconds%60 + " sec - ETA " + ("0" + current.getHours()).slice(-2) + ":" +
+                            ("0" + current.getMinutes()).slice(-2) + "</p>";
+                    }
+                }
+            }
+            //accommodates the case where other direction's buses are available
+            else if (curNode.nodeName=="direction" && found === false){
+                if (subPrint==="") {
+                    subPrint+="No vehicles available for this direction, but available for: " + curNode.getAttribute("title");
+                }
+                else {
+                    subPrint+=", " + curNode.getAttribute("title");
                 }
             }
         }
-        //accommodates the case where other direction's buses are available
-         else if (curNode.nodeName=="direction" && found === false){
-            if (subPrint==="") {
-                subPrint+="No vehicles available for this direction, but available for: " + curNode.getAttribute("title");
-            }
-            else {
-                subPrint+=", " + curNode.getAttribute("title");
-            }
-        }
-    }
-    predHandle();
+        predHandle();
+    });
 }
 
 //handles appending predictions, wipes variables
@@ -250,48 +253,49 @@ function clearBoth() {
 function submit() {
     stopID = document.getElementById("stopFill").value;
     document.getElementById("stopName").innerHTML = "Stop number " + stopID;
-    const doc = $.ajax({
+    $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" + stopID,
         xml: "xml",
-        async: false,
-    }).responseXML;
-    console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" + stopID);
-    //contains #text as well as directions, directions will contain their respective predictions
-    let routes = doc.childNodes[0].childNodes;
-    for (let i = 0; i < routes.length; i++) {
-        //incremented current node
-        let curNode = routes[i];
-        if (curNode.nodeName!=="#text" && !curNode.hasAttribute("dirTitleBecauseNoPredictions")) {
-            //incremented current node, child of curNode
-            curRoute = curNode.getAttribute("routeTag");
-            let curSub = curNode.childNodes;
-            for (let j = 0; j < curSub.length; j++) {
-                if (curSub[j].nodeName=="direction") {
-                    found = true;
-                    predictions+="<h3>" + curSub[j].getAttribute("title") + "</h3>";
-                    //that's right, it's 2am so this is what I'm doing now I guess
-                    let curSubSub = curSub[j].childNodes;
-                    for (let k = 0; k < curSubSub.length; k++) {
-                        if (curSubSub[k].nodeName=="prediction") {
-                            //new time object
-                            let current = new Date();
-                            let seconds = curSubSub[k].getAttribute("seconds");
-                            //seconds is multiplied by 1000 as js works with milliseconds
-                            current = new Date(current.getTime() + seconds*1000);
-                            predictions+= "<p>" +curSubSub[k].getAttribute("branch") + " - Bus #" + curSubSub[k].getAttribute("vehicle") + " - in " +
-                                Math.floor(seconds/60) + " min " + seconds%60 + " sec - ETA " + ("0" + current.getHours()).slice(-2) + ":" +
-                                ("0" + current.getMinutes()).slice(-2) + "</p>";
+        async: true,
+    }).done(function(doc) {
+        console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" + stopID);
+        //contains #text as well as directions, directions will contain their respective predictions
+        let routes = doc.childNodes[0].childNodes;
+        for (let i = 0; i < routes.length; i++) {
+            //incremented current node
+            let curNode = routes[i];
+            if (curNode.nodeName!=="#text" && !curNode.hasAttribute("dirTitleBecauseNoPredictions")) {
+                //incremented current node, child of curNode
+                curRoute = curNode.getAttribute("routeTag");
+                let curSub = curNode.childNodes;
+                for (let j = 0; j < curSub.length; j++) {
+                    if (curSub[j].nodeName=="direction") {
+                        found = true;
+                        predictions+="<h3>" + curSub[j].getAttribute("title") + "</h3>";
+                        //that's right, it's 2am so this is what I'm doing now I guess
+                        let curSubSub = curSub[j].childNodes;
+                        for (let k = 0; k < curSubSub.length; k++) {
+                            if (curSubSub[k].nodeName=="prediction") {
+                                //new time object
+                                let current = new Date();
+                                let seconds = curSubSub[k].getAttribute("seconds");
+                                //seconds is multiplied by 1000 as js works with milliseconds
+                                current = new Date(current.getTime() + seconds*1000);
+                                predictions+= "<p>" +curSubSub[k].getAttribute("branch") + " - Bus #" + curSubSub[k].getAttribute("vehicle") + " - in " +
+                                    Math.floor(seconds/60) + " min " + seconds%60 + " sec - ETA " + ("0" + current.getHours()).slice(-2) + ":" +
+                                    ("0" + current.getMinutes()).slice(-2) + "</p>";
+                            }
                         }
                     }
                 }
             }
         }
-    }
-    if (found===false) {
-        predictions+= "No predictions available at the moment. There may be no vehicles running or the stop number may not exist.";
-    }
-    predHandle();
+        if (found===false) {
+            predictions+= "No predictions available at the moment. There may be no vehicles running or the stop number may not exist.";
+        }
+        predHandle();
+    })
 }
 
 function setMap() {
