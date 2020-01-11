@@ -354,16 +354,16 @@ function initMap() {
         fullRoute.setMap(map);
     }
     routeLine = [];
-    const doc = $.ajax({
+    $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=" + epoch,
         xml: "xml",
-        async: false,
-    }).responseXML;
-    console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=" + epoch);
-    let vehicles = doc.childNodes[0].childNodes
-    for (let i = 0; i < vehicles.length; i++) {
-        let vehicle = vehicles[i];
+        async: true,
+    }).done(function (doc) {
+        console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=" + epoch);
+        let vehicles = doc.childNodes[0].childNodes
+        for (let i = 0; i < vehicles.length; i++) {
+            let vehicle = vehicles[i];
             if (vehicle.nodeName == "vehicle") {
                 let pos = new google.maps.LatLng(parseFloat(vehicle.getAttribute("lat")), parseFloat(vehicle.getAttribute("lon")));
                 let icon = {
@@ -381,18 +381,11 @@ function initMap() {
             else if (vehicle.nodeName == "lastTime") {
                 epoch = vehicle.getAttribute("time");
             }
-    }
+        }
+    })
 }
 
 //site initialization
-//retrieves route info
-const doc = $.ajax({
-    type: "GET",
-    url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=ttc",
-    xml: "xml",
-    async: false,
-}).responseXML;
-let routes = doc.childNodes[0].childNodes;
 //first menu, route selection
 let selRoute = document.createElement("select");
 selRoute.className = "menu";
@@ -417,16 +410,26 @@ selDir.appendChild(dirDef);
 let stopDef = document.createElement("option");
 defOption(stopDef);
 selStop.appendChild(stopDef);
+//retrieves route info
+$.ajax({
+    type: "GET",
+    url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=ttc",
+    xml: "xml",
+    async: true,
+}).done(function(doc) {
+    let routes = doc.childNodes[0].childNodes;
 //populates route menu
-for (let i = 0; i < routes.length; i++) {
-    let route = routes[i];
-    if (route.nodeName !== "#text") {
-        let opt = document.createElement("option");
-        opt.value = route.getAttribute("title").match(/\d+/)[0];
-        opt.innerHTML = route.getAttribute("title");
-        selRoute.appendChild(opt);
+    for (let i = 0; i < routes.length; i++) {
+        let route = routes[i];
+        if (route.nodeName !== "#text") {
+            let opt = document.createElement("option");
+            opt.value = route.getAttribute("title").match(/\d+/)[0];
+            opt.innerHTML = route.getAttribute("title");
+            selRoute.appendChild(opt);
+        }
     }
-}
+});
+//listen for enter
 document.getElementById("stopFill").addEventListener("keyup", function(event) {
     if (event.keyCode === 13) {
         event.preventDefault();
