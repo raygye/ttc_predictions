@@ -387,8 +387,8 @@ function initMap() {
                     position: pos,
                     icon: icon
                 });
+                marker.setMap(map);
                 junk.push(marker);
-                junk[i].setMap(map);
             }
             else if (vehicle.nodeName === "lastTime") {
                 epoch = vehicle.getAttribute("time");
