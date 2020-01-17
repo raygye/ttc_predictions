@@ -34,6 +34,8 @@ let stopLon = 0;
 let curRoute;
 //a 2d array of google lat/lng coordinates for route line
 let routeLine = [];
+//check for noDirTitle
+let noDirTitle = false;
 //array of vehicles to be cleared
 let junk = [];
 //set key
@@ -258,6 +260,7 @@ function clearBoth() {
 //function starts on submission of stopID input
 function submit() {
     predBool = false;
+    noDirTitle = false;
     stopID = document.getElementById("stopFill").value;
     document.getElementById("stopName").innerHTML = "Stop number " + stopID;
     $.ajax({
@@ -272,10 +275,13 @@ function submit() {
         for (let i = 0; i < routes.length; i++) {
             //incremented current node
             let curNode = routes[i];
-            if (curNode.nodeName!=="#text") {
+            if (curNode.nodeName!=="#text" && !noDirTitle) {
                 if (curNode.hasAttribute("dirTitleBecauseNoPredictions")) {
                     curRoute = curNode.getAttribute("routeTag");
                     continue;
+                }
+                else {
+                    noDirTitle = true;
                 }
                 //incremented current node, child of curNode
                 curRoute = curNode.getAttribute("routeTag");
