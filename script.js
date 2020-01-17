@@ -295,7 +295,6 @@ function submit() {
             predictions+= "No predictions available at the moment. There may be no vehicles running or the stop number may not exist.";
         }
         predHandle();
-        setMap();
     })
 }
 
