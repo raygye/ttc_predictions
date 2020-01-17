@@ -151,7 +151,7 @@ function setStops() {
 }
 
 function predict() {
-    predict = true;
+    predBool = true;
     $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
