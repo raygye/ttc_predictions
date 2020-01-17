@@ -276,7 +276,7 @@ function submit() {
             //incremented current node
             let curNode = routes[i];
             if (curNode.nodeName!=="#text") {
-                if (curNode.hasAttribute("dirTitleBecauseNoPredictions")) {
+                if (curNode.hasAttribute("dirTitleBecauseNoPredictions" && !noDirTitle)) {
                     curRoute = curNode.getAttribute("routeTag");
                     continue;
                 }
