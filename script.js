@@ -276,14 +276,13 @@ function submit() {
             //incremented current node
             let curNode = routes[i];
             if (curNode.nodeName!=="#text") {
-                if (curNode.hasAttribute("dirTitleBecauseNoPredictions" || !noDirTitle)) {
+                if (curNode.hasAttribute("dirTitleBecauseNoPredictions" && !noDirTitle)) {
                     curRoute = curNode.getAttribute("routeTag");
                     continue;
                 }
-                else {
+                else if(!curNode.hasAttribute("dirTitleBecauseNoPredictions")) {
                     noDirTitle = true;
                     curRoute = curNode.getAttribute("routeTag");
-                    console.log(curRoute + "CORRECT");
                 }
                 //incremented current node, child of curNode
                 let curSub = curNode.childNodes;
@@ -319,7 +318,7 @@ function submit() {
 function setMap() {
     //reset routeline
     routeLine = [];
-    console.log(curRoute);
+    console.log(curRoute + "WHY");
     $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute,
