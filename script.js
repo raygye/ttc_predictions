@@ -259,6 +259,7 @@ function clearBoth() {
 
 //function starts on submission of stopID input
 function submit() {
+    predBool = false;
     stopID = document.getElementById("stopFill").value;
     document.getElementById("stopName").innerHTML = "Stop number " + stopID;
     $.ajax({
