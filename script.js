@@ -237,6 +237,9 @@ function updateID() {
 //will increment per second
 function counting() {
     countNum++;
+    if (countNum===1) {
+        setMap();
+    }
     document.getElementById("count").innerHTML = "Predictions refreshing in " + (5-(countNum%5)) + " second(s)";
     document.getElementById("mapCount").innerHTML = "Map refreshing in " + (30-(countNum%30)) + " second(s)";
 }
@@ -332,7 +335,6 @@ function setMap() {
         }
         initMap();
     })
-
 }
 function initMap() {
     let theStop = {lat: stopLat, lng: stopLon};
