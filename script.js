@@ -1,3 +1,5 @@
+//boolean for predict/submit, 0 = predict/menu, 1 = submit/stopid
+let predBool = false;
 //currently 1d, will be later pushed to 2d to store directions and their respective stops
 let dirs = [];
 //prediction string to be displayed
@@ -149,6 +151,7 @@ function setStops() {
 }
 
 function predict() {
+    predict = true;
     $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
@@ -243,7 +246,7 @@ function updateID() {
 //will increment per second
 function counting() {
     countNum++;
-    if (countNum===1) {
+    if (countNum===1 && predBool===false) {
         setMap();
     }
     document.getElementById("count").innerHTML = "Predictions refreshing in " + (5-(countNum%5)) + " second(s)";
