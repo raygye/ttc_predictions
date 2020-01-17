@@ -202,7 +202,7 @@ function predict() {
 //handles appending predictions, wipes variables
 function predHandle() {
     //final prediction printed
-    if(predictions=="") {
+    if(predictions==="") {
         document.getElementById("printPre").innerHTML = subPrint;
     }
     else {
@@ -295,6 +295,7 @@ function submit() {
             predictions+= "No predictions available at the moment. There may be no vehicles running or the stop number may not exist.";
         }
         predHandle();
+        setMap();
     })
 }
 
