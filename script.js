@@ -223,10 +223,6 @@ function predHandle() {
     subPrint = "";
     //reset found boolean
     found = false;
-    for (let i = 0; i < junk.length; i++) {
-        junk[i].setMap(null);
-    }
-    junk = [];
 }
 
 //sets intervals for updates and update countdown clock
@@ -346,6 +342,11 @@ function setMap() {
     })
 }
 function initMap() {
+    //clear previous vehicles
+    for (let i = 0; i < junk.length; i++) {
+        junk[i].setMap(null);
+    }
+    junk = [];
     let theStop = {lat: stopLat, lng: stopLon};
     let map = new google.maps.Map(document.getElementById("map"), {
         zoom: 16,
