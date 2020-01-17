@@ -318,7 +318,7 @@ function submit() {
 function setMap() {
     //reset routeline
     routeLine = [];
-    console.log(curRoute + "WHY");
+    console.log(curRoute);
     $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute,
