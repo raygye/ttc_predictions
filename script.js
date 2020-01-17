@@ -273,9 +273,14 @@ function submit() {
         for (let i = 0; i < routes.length; i++) {
             //incremented current node
             let curNode = routes[i];
-            if (curNode.nodeName!=="#text" && !curNode.hasAttribute("dirTitleBecauseNoPredictions")) {
+            if (curNode.nodeName!=="#text") {
+                if (curNode.hasAttribute("dirTitleBecauseNoPredictions")) {
+                    curRoute = curNode.getAttribute("routeTag");
+                    continue;
+                }
                 //incremented current node, child of curNode
                 curRoute = curNode.getAttribute("routeTag");
+                console.log(curRoute);
                 let curSub = curNode.childNodes;
                 for (let j = 0; j < curSub.length; j++) {
                     if (curSub[j].nodeName==="direction") {
