@@ -239,6 +239,7 @@ function counting() {
     countNum++;
     if (countNum===1) {
         setMap();
+        initMap();
     }
     document.getElementById("count").innerHTML = "Predictions refreshing in " + (5-(countNum%5)) + " second(s)";
     document.getElementById("mapCount").innerHTML = "Map refreshing in " + (30-(countNum%30)) + " second(s)";
