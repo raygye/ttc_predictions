@@ -14,3 +14,5 @@ through their respective menus.
 If there is a "This page can't load  Google Maps correctly." pop-up 
 as well as the "For developmental purposes only" overlay, the project is 
 no longer on my Google billing plan.
+
+![Sample](media/app_pic.png)

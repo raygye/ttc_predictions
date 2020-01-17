@@ -303,7 +303,7 @@ function setMap() {
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute,
         xml: "xml",
-        async: false,
+        async: true,
     }).done(function(doc) {
         console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute);
         //contains stops, routes, directions,#text...
