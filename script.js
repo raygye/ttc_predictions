@@ -36,8 +36,6 @@ let curRoute;
 let routeLine = [];
 //array of vehicles to be cleared
 let junk = [];
-//variable for epoch time of last return
-let epoch = "0";
 //set key
 let script = document.createElement("script");
 script.setAttribute("async", "");
@@ -313,6 +311,9 @@ function submit() {
 }
 
 function setMap() {
+    //reset routeline
+    routeLine = [];
+    console.log(curRoute);
     $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute,
@@ -374,11 +375,11 @@ function initMap() {
     routeLine = [];
     $.ajax({
         type: "GET",
-        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=" + epoch,
+        url: "http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=0",
         xml: "xml",
         async: true,
     }).done(function (doc) {
-        console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=" + epoch);
+        console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=0");
         let vehicles = doc.childNodes[0].childNodes;
         for (let i = 0; i < vehicles.length; i++) {
             let vehicle = vehicles[i];
@@ -396,9 +397,6 @@ function initMap() {
                 });
                 marker.setMap(map);
                 junk.push(marker);
-            }
-            else if (vehicle.nodeName === "lastTime") {
-                epoch = vehicle.getAttribute("time");
             }
         }
     })
