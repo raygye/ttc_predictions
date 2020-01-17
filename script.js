@@ -32,6 +32,8 @@ let stopLon = 0;
 let curRoute;
 //a 2d array of google lat/lng coordinates for route line
 let routeLine = [];
+//array of vehicles to be cleared
+let junk = [];
 //variable for epoch time of last return
 let epoch = "0";
 //set key
@@ -218,6 +220,10 @@ function predHandle() {
     subPrint = "";
     //reset found boolean
     found = false;
+    for (let i = 0; i < junk.length; i++) {
+        junk[i].setMap(null);
+    }
+    junk = [];
 }
 
 //sets intervals for updates and update countdown clock
@@ -239,7 +245,6 @@ function counting() {
     countNum++;
     if (countNum===1) {
         setMap();
-        initMap();
     }
     document.getElementById("count").innerHTML = "Predictions refreshing in " + (5-(countNum%5)) + " second(s)";
     document.getElementById("mapCount").innerHTML = "Map refreshing in " + (30-(countNum%30)) + " second(s)";
@@ -379,7 +384,8 @@ function initMap() {
                     position: pos,
                     icon: icon
                 });
-                marker.setMap(map);
+                junk.push(marker);
+                junk[i].setMap(map);
             }
             else if (vehicle.nodeName === "lastTime") {
                 epoch = vehicle.getAttribute("time");
