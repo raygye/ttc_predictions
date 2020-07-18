@@ -1,11 +1,5 @@
-.card {
-    background-color: lightslategrey;
-}
-.button:hover {
-    box-shadow: 5px 5px 5px grey;
-}
 #predictions {
-    transition: opacity 0.5s;
+    transition: opacity 1s;
     display: flex;
 }
 body {
