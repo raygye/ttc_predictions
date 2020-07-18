@@ -410,15 +410,15 @@ function initMap() {
 //site initialization
 //first menu, route selection
 let selRoute = document.createElement("select");
-selRoute.className = "menu";
+selRoute.className = "form-control";
 selRoute.id = "selRoute";
 //second menu, direction selection
 let selDir = document.createElement("select");
-selDir.className = "menu";
+selDir.className = "form-control";
 selDir.id = "selDir";
 //third menu, stop selection
 let selStop = document.createElement("select");
-selStop.className = "menu";
+selStop.className = "form-control";
 selStop.id = "selStop";
 //default route selections
 let routeDef = document.createElement("option");
