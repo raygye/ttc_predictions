@@ -6,15 +6,22 @@
     <link rel="stylesheet" href="stylesheet.css">
     <link rel="icon" href="media/favicon.png">
     <script src="./jquery.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 
 <body>
 
-<div class="card">
-    <h1>TTC Predictions</h1>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+           <h1>TTC Predictions</h1>
+        </div>
+    </div>
 </div>
-<br><div id="parent" class="card-deck">
+<br>
+<div class="container">
+<div id="parent" class="card-deck">
+
     <div id="manual" class="card">
         <div class="container">
         <div class="card-body">
@@ -31,22 +38,28 @@
         <h2 class="card-title">Select by stop number</h2>
         <label for="stopFill">Enter stop number:</label>
         <input id="stopFill" type="number" class="form-control">
-        <br><button id="submit" class="btn btn-secondary" onclick="submit(); clearBoth(); updateID(); setMap();">Go</button>
+        <br><button id="submit" class="btn btn-secondary mb-2" onclick="submit(); clearBoth(); updateID(); setMap();">Go</button>
         </div>
         </div>
     </div>
     </div>
 </div>
-<br><div id="predictions" class="card" style="opacity: 0;">
+</div>
+<br>
+<div class="container">
+<div id="predictions" class="card-deck" style="opacity: 0;">
     <div class="card">
+        <div class="container">
         <h2 id="stopName"></h2>
         <p id="printPre"></p>
         <hr>
         <p id="count"></p>
         <p id="mapCount"></p>
         <p id="lastRef"></p>
+        </div>
     </div>
     <div id="map"  style="width: 100%"></div>
+</div>
 </div>
 <script src="./script.js"></script>
 </body>
