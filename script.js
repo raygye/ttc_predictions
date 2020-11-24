@@ -48,7 +48,7 @@ document.getElementById("predictions").appendChild(script);
 //sets current route
 function changeRoute() {
     curRoute = document.getElementById("selRoute").value;
-    console.log(curRoute);
+    //console.log(curRoute);
 }
 
 //empties selection menus
@@ -159,7 +159,7 @@ function predict() {
         xml: "xml",
         async: true,
     }).done(function(doc) {
-        console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
+        //console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
             "&s=" + document.getElementById("selStop").value);
         if (doc.childNodes[0].childNodes[1].hasAttribute("dirTitleBecauseNoPredictions")) {
             predictions+= "No predictions available at the moment. There may be no vehicles running.";
@@ -269,7 +269,7 @@ function submit() {
         xml: "xml",
         async: true,
     }).done(function(doc) {
-        console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" + stopID);
+        //console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=" + stopID);
         //contains #text as well as directions, directions will contain their respective predictions
         let routes = doc.childNodes[0].childNodes;
         for (let i = 0; i < routes.length; i++) {
@@ -318,14 +318,14 @@ function submit() {
 function setMap() {
     //reset routeline
     routeLine = [];
-    console.log(curRoute);
+    //console.log(curRoute);
     $.ajax({
         type: "GET",
         url: "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute,
         xml: "xml",
         async: true,
     }).done(function(doc) {
-        console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute);
+        //console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=" + curRoute);
         //contains stops, routes, directions,#text...
         let allRoutes = doc.childNodes[0].childNodes[1].childNodes;
         let dirCount = 0;
@@ -384,7 +384,7 @@ function initMap() {
         xml: "xml",
         async: true,
     }).done(function (doc) {
-        console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=0");
+        //console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=ttc&r=" + curRoute + "&t=0");
         let vehicles = doc.childNodes[0].childNodes;
         for (let i = 0; i < vehicles.length; i++) {
             let vehicle = vehicles[i];
