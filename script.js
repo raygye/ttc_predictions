@@ -160,7 +160,7 @@ function predict() {
         async: true,
     }).done(function(doc) {
         //console.log("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&r=" + document.getElementById("selRoute").value +
-            "&s=" + document.getElementById("selStop").value);
+        //    "&s=" + document.getElementById("selStop").value);
         if (doc.childNodes[0].childNodes[1].hasAttribute("dirTitleBecauseNoPredictions")) {
             predictions+= "No predictions available at the moment. There may be no vehicles running.";
         }
